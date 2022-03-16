@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32126.317
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AslWebApi", "AslWebApi\AslWebApi.csproj", "{B85961E9-042F-4599-B7B6-0AFF45343336}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B85961E9-042F-4599-B7B6-0AFF45343336}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B85961E9-042F-4599-B7B6-0AFF45343336}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B85961E9-042F-4599-B7B6-0AFF45343336}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B85961E9-042F-4599-B7B6-0AFF45343336}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1EB6DD2A-6918-4D0F-A84D-83EC02CDC600}
+	EndGlobalSection
+EndGlobal
