@@ -1,5 +1,6 @@
 ﻿using AslWebApi.DAL.Models;
 using AslWebApi.DAL.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace AslWebApi.Services;
 
@@ -10,6 +11,8 @@ public interface IUserStateService
 
     public UserState? CreateUserState(UserState userState);
     public Task<UserState?> CreateUserStateAsync(UserState userState);
+
+    public Task<UserState> GetLastStateAsync(int UserID);
 
 }
 
@@ -65,6 +68,7 @@ public class UserStateService : IUserStateService
                 if (!await _userStateRepo.UpdateAsync(prevState)) return false;
             }
         }
+        userState.UserStateId = prevState.UserStateId;
 
         bool logGenerated = await _logService.InsertLogAsync<UserState>(TableName: "UserStateS", logType: "UPDATE", userState.UserStateId);
         if (!logGenerated) return false;
@@ -82,6 +86,11 @@ public class UserStateService : IUserStateService
     {
         if (userState == null) return null;
         return await _userStateRepo.CreateAsync(userState);
+    }
+
+    public async Task<UserState?> GetLastStateAsync(int UserID)
+    {
+        return await _userStateRepo.GetAll().FirstOrDefaultAsync(s => s.UserID == UserID);
     }
 }
 

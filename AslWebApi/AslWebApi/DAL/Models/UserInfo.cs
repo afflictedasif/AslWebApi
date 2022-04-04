@@ -32,9 +32,9 @@ namespace AslWebApi.DAL.Models
 
         [MaxLength(100)]
         public string? Address { get; set; } 
-        [MaxLength(10), Column(TypeName = "time"), Required]
+        [ Column(TypeName = "time"), Required]
         public TimeSpan TimeFr { get; set; }
-        [MaxLength(10), Column(TypeName = "time"), Required]
+        [ Column(TypeName = "time"), Required]
         public TimeSpan TimeTo { get; set; }
         [MaxLength(1), Column(TypeName = "varchar(1)"), Required]
         public string Status { get; set; } = default!;

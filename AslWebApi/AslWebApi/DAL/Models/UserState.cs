@@ -13,7 +13,7 @@ namespace AslWebApi.DAL.Models
 
 
 
-        [MaxLength(5), Column(TypeName = "varchar(50)"), Required]
+        [MaxLength(50), Column(TypeName = "varchar(50)"), Required]
         public string CurrentState { get; set; } = default!;
 
         [Column(TypeName = "smalldatetime")]

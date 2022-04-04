@@ -18,6 +18,8 @@ builder.Services.AddScoped<IFileUploader, FileUploader>();
 builder.Services.AddScoped<IScreenShotService, ScreenShotService>();
 builder.Services.AddScoped<ILogService, LogService>();
 builder.Services.AddScoped<IUserRepo, UserRepo>();
+builder.Services.AddScoped<IUserStateRepo, UserStateRepo>();
+builder.Services.AddScoped<IUserStateService, UserStateService>();
 
 
 builder.Services.AddTransient<GlobalFunctions>();
