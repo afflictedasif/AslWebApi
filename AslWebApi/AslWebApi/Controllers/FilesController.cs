@@ -16,6 +16,11 @@ namespace AslWebApi.Controllers
             _screenShotService = screenShotService;
         }
 
+        /// <summary>
+        /// Saves the file in the server and insert file data into database.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> OnPostUploadAsync(IFormFile file)

@@ -4,6 +4,8 @@ using AslWebApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace AslWebApi.Controllers
 {
@@ -23,32 +25,65 @@ namespace AslWebApi.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
+        [Authorize]
+        [HttpGet, Route("getPreviousStates")]
+        public async Task<IActionResult> getPreviousStates()
+        {
+            int UserID = GlobalFunctions.CurrentUserS().UserID;
+            List<CLog> logs = await _logRepo.GetAll().Where(l => l.UserID == UserID 
+                                                            && ((DateTime)l.LogTime!).Date == DateTime.Now.Date 
+                                                            && l.TableName == "UserStates").OrderByDescending(l=> l.LogTime).ToListAsync();
+            List<UserState> userStates = new List<UserState>();
+            foreach (CLog log in logs)
+            {
+                UserState? state = JsonConvert.DeserializeObject<UserState>(log.LogData);
+                if (state is not null)
+                    userStates.Add(state);
+            }
+            return Ok(userStates);
+        }
 
+
+        /// <summary>
+        /// Update userstate in the database
+        /// </summary>
+        /// <param name="userState"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpPost, Route("updateState")]
         public async Task<IActionResult> updateState([FromBody] UserState userState)
         {
             UserState? prevState = _userStateRepo.GetAll().FirstOrDefault(u => u.UserID == userState.UserID);
+            if (prevState is null) return Ok();
             userState.UserStateId = prevState.UserStateId;
             bool result = await _userStateRepo.UpdateAsync(userState);
             if (result) return Ok();
             return BadRequest();
         }
 
+        /// <summary>
+        /// Insert Screenshot data into the database
+        /// </summary>
+        /// <param name="ss"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpPost, Route("addss")]
         public async Task<IActionResult> addss([FromBody] ScreenShot ss)
         {
             string rootPath = $"{_webHostEnvironment.WebRootPath}\\ScreenShots";
 
-            ss.DirPath = rootPath + "\\" + ss.DirPath.Substring(6, ss.DirPath.Length-6);
+            ss.DirPath = rootPath + "\\" + ss.DirPath.Substring(6, ss.DirPath.Length - 6);
             ss.ScreenShotID = 0;
             ScreenShot? ssCreated = await _ssRepo.CreateAsync(ss);
             if (ssCreated is not null) return Ok();
             return BadRequest();
         }
 
-
+        /// <summary>
+        /// Inserts log into database
+        /// </summary>
+        /// <param name="log"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpPost, Route("addLogs")]
         public async Task<IActionResult> addLogs([FromBody] CLog log)
@@ -59,6 +94,12 @@ namespace AslWebApi.Controllers
             return BadRequest();
         }
 
+
+        /// <summary>
+        /// Save Files to Server
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpPost, Route("Files")]
         public async Task<IActionResult> Files(IFormFile file)
@@ -70,6 +111,12 @@ namespace AslWebApi.Controllers
         }
 
 
+        /// <summary>
+        /// Check the file extensions, create directory from the db, then save the file in that.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        [NonAction]
         private async Task<string[]?> SaveFileAsync(IFormFile file)
         {
             try
@@ -105,6 +152,14 @@ namespace AslWebApi.Controllers
                 return null;
             }
         }
+
+        /// <summary>
+        /// Get the directory name from database and create the directory if not exists
+        /// </summary>
+        /// <param name="rootPath"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        [NonAction]
         private string GenerateFolders(string rootPath, string fileName)
         {
             string dirPath = _ssRepo.GetAll().FirstOrDefault(s => s.FileName == fileName)!.DirPath;
@@ -117,7 +172,6 @@ namespace AslWebApi.Controllers
             }
             return folderPath;
         }
-
 
     }
 }

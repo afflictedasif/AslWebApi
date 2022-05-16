@@ -6,8 +6,18 @@ namespace AslWebApi.Services;
 
 public interface IFileUploader
 {
-    public Task<bool> SaveMultipleFilesAsync(List<IFormFile> files);
+
+    /// <summary>
+    /// Saves file to server. File should be jpg or png only.
+    /// </summary>
+    /// <param name="file"></param>
+    /// <returns>an array of folder path and file name</returns>
     public Task<string[]?> SaveFileAsync(IFormFile file);
+    /// <summary>
+    /// Delete the file from the given path
+    /// </summary>
+    /// <param name="filePath">Fully qualified path of the file</param>
+    /// <returns></returns>
     public bool DeleteFile(string filePath);
 
 
@@ -25,6 +35,7 @@ public class FileUploader : IFileUploader
         _webHostEnvironment = webHostEnvironment;
     }
 
+    #region Unused Codes
     public async Task<bool> SaveMultipleFilesAsync(List<IFormFile> files)
     {
         long size = files.Sum(f => f.Length);
@@ -43,8 +54,13 @@ public class FileUploader : IFileUploader
 
         return true;
     }
+    #endregion
 
-
+    /// <summary>
+    /// Saves file to server. File should be jpg or png only.
+    /// </summary>
+    /// <param name="file"></param>
+    /// <returns>an array of folder path and file name</returns>
     public async Task<string[]?> SaveFileAsync(IFormFile file)
     {
         try
@@ -81,6 +97,11 @@ public class FileUploader : IFileUploader
         }
     }
 
+    /// <summary>
+    /// Delete the file from the given path
+    /// </summary>
+    /// <param name="filePath">Fully qualified path of the file</param>
+    /// <returns></returns>
     public bool DeleteFile(string filePath)
     {
         try
@@ -96,7 +117,11 @@ public class FileUploader : IFileUploader
         }
 
     }
-
+    /// <summary>
+    /// Generate directory with userid and date as subdirectory
+    /// </summary>
+    /// <param name="rootPath"></param>
+    /// <returns>Full path of the generated directory</returns>
     private string GenerateFolders(string rootPath)
     {
         string userID = _currentUser!.UserID.ToString();
@@ -108,11 +133,14 @@ public class FileUploader : IFileUploader
         }
         return folderPath;
     }
-
+    /// <summary>
+    /// Generate uniqe file name with timestamp and guid with jpg file extenstion
+    /// </summary>
+    /// <returns>Generated file name</returns>
     private string GenerateFileName()
     {
         string guid = Guid.NewGuid().ToString();
-        return DateTime.Now.ToString("HH-mm-ss") + guid.Substring(0, 8) + ".jpg";
+        return DateTime.Now.ToString("HH-mm-ss") + "-" + guid.Substring(0, 8) + ".jpg";
     }
 
 }

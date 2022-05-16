@@ -6,7 +6,18 @@ namespace AslWebApi.Services
 {
     public interface IScreenShotService
     {
+        /// <summary>
+        /// Saves the file in the server and insert file data into database. if insert into database fails then delete the file.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns>boolean indicating success or failure</returns>
         public Task<bool> UploadSS(IFormFile file);
+
+        /// <summary>
+        /// Delete the data from the database and if succeeds then Delete the file from the server.
+        /// </summary>
+        /// <param name="ss"></param>
+        /// <returns>boolean</returns>
         public Task<bool> DeleteSS(ScreenShot ss);
 
     }
@@ -21,7 +32,11 @@ namespace AslWebApi.Services
             _uploader = uploader;
             _currentUser = GlobalFunctions.CurrentUserS();
         }
-
+        /// <summary>
+        /// Delete the data from the database and if succeeds then Delete the file from the server.
+        /// </summary>
+        /// <param name="ss"></param>
+        /// <returns>boolean</returns>
         public async Task<bool> DeleteSS(ScreenShot ss)
         {
             if (ss == null) return false;
@@ -30,6 +45,11 @@ namespace AslWebApi.Services
             return _uploader.DeleteFile(filePath);
         }
 
+        /// <summary>
+        /// Saves the file in the server and insert file data into database. if insert into database fails then delete the file.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns>boolean indicating success or failure</returns>
         public async Task<bool> UploadSS(IFormFile file)
         {
             string[]? result = await _uploader.SaveFileAsync(file);

@@ -6,14 +6,72 @@ namespace AslWebApi.Services
 {
     public interface ILogService
     {
+        /// <summary>
+        /// Inserts JSON serialized data of the given ID into log table
+        /// </summary>
+        /// <typeparam name="T">Table type</typeparam>
+        /// <param name="UserID">UserID of the user that made the action</param>
+        /// <param name="TableName">Table Name</param>
+        /// <param name="logType">Log Type: Update, Delete, Login, Logout, etc</param>
+        /// <param name="Id">Primary Key (ID) of the record</param>
+        /// <returns></returns>
         public CLog? InsertLog<T>(int UserID, string TableName, string logType, int Id) where T : class;
+        /// <summary>
+        /// Inserts JSON serialized data of the given ID into log table
+        /// </summary>
+        /// <typeparam name="T">Table type</typeparam>
+        /// <param name="TableName">Table Name</param>
+        /// <param name="logType">Log Type: Update, Delete, Login, Logout, etc</param>
+        /// <param name="Id">Primary Key (ID) of the record</param>
+        /// <returns></returns>
         public Task<bool> InsertLogAsync<T>(string TableName, string logType, string Id) where T : class;
+        /// <summary>
+        /// Inserts JSON serialized data of the given ID into log table
+        /// </summary>
+        /// <typeparam name="T">Table type</typeparam>
+        /// <param name="TableName">Table Name</param>
+        /// <param name="logType">Log Type: Update, Delete, Login, Logout, etc</param>
+        /// <param name="Id">Primary Key (ID) of the record</param>
+        /// <returns></returns>
         public bool InsertLog<T>(string TableName, string logType, int Id) where T : class;
+
+        /// <summary>
+        /// Inserts JSON serialized data of the given ID into log table
+        /// </summary>
+        /// <typeparam name="T">Table type</typeparam>
+        /// <param name="TableName">Table Name</param>
+        /// <param name="logType">Log Type: Update, Delete, Login, Logout, etc</param>
+        /// <param name="Id">Primary Key (ID) of the record</param>
+        /// <returns></returns>
         public Task<bool> InsertLogAsync<T>(string TableName, string logType, int Id) where T : class;
 
+        /// <summary>
+        /// Inserts JSON serialized data of the given ID into log table
+        /// </summary>
+        /// <typeparam name="T">Table type</typeparam>
+        /// <param name="TableName">Table Name</param>
+        /// <param name="logType">Log Type: Update, Delete, Login, Logout, etc</param>
+        /// <param name="Id">Primary Key (ID) of the record</param>
+        /// <returns></returns>
         public bool InsertLog<T>(string TableName, string logType, string Id) where T : class;
-        public bool InsertLogWithWhereClause<T>(string TableName, string logType, string whereClause) where T : class;
 
+        /// <summary>
+        /// Inserts JSON serialized data of the given query into log table
+        /// </summary>
+        /// <typeparam name="T">Table type</typeparam>
+        /// <param name="TableName">Table Name</param>
+        /// <param name="logType">Log Type: Update, Delete, Login, Logout, etc</param>
+        /// <param name="whereClause">Where clause to find the record from sql database.</param>
+        /// <returns></returns>
+        public bool InsertLogWithWhereClause<T>(string TableName, string logType, string whereClause) where T : class;
+        /// <summary>
+        /// Inserts JSON serialized data of the given query into log table
+        /// </summary>
+        /// <typeparam name="T">Table type</typeparam>
+        /// <param name="TableName">Table Name</param>
+        /// <param name="logType">Log Type: Update, Delete, Login, Logout, etc</param>
+        /// <param name="whereClause">Where clause to find the record from sql database.</param>
+        /// <returns></returns>
         public Task<bool> InsertLogWithWhereClauseAsync<T>(string TableName, string logType, string whereClause) where T : class;
 
     }
@@ -34,6 +92,16 @@ namespace AslWebApi.Services
 
             currentUser = GlobalFunctions.CurrentUserS();
         }
+
+        /// <summary>
+        /// Inserts JSON serialized data of the given ID into log table
+        /// </summary>
+        /// <typeparam name="T">Table type</typeparam>
+        /// <param name="UserID">UserID of the user that made the action</param>
+        /// <param name="TableName">Table Name</param>
+        /// <param name="logType">Log Type: Update, Delete, Login, Logout, etc</param>
+        /// <param name="Id">Primary Key (ID) of the record</param>
+        /// <returns></returns>
         public CLog? InsertLog<T>(int UserID, string TableName, string logType, int Id) where T : class
         {
             try
@@ -58,6 +126,14 @@ namespace AslWebApi.Services
             }
         }
 
+        /// <summary>
+        /// Inserts JSON serialized data of the given ID into log table
+        /// </summary>
+        /// <typeparam name="T">Table type</typeparam>
+        /// <param name="TableName">Table Name</param>
+        /// <param name="logType">Log Type: Update, Delete, Login, Logout, etc</param>
+        /// <param name="Id">Primary Key (ID) of the record</param>
+        /// <returns></returns>
         public bool InsertLog<T>(string TableName, string logType, int Id) where T : class
         {
             try
@@ -80,6 +156,14 @@ namespace AslWebApi.Services
                 return false;
             }
         }
+        /// <summary>
+        /// Inserts JSON serialized data of the given ID into log table
+        /// </summary>
+        /// <typeparam name="T">Table type</typeparam>
+        /// <param name="TableName">Table Name</param>
+        /// <param name="logType">Log Type: Update, Delete, Login, Logout, etc</param>
+        /// <param name="Id">Primary Key (ID) of the record</param>
+        /// <returns></returns>
         public async Task<bool> InsertLogAsync<T>(string TableName, string logType, int Id) where T : class
         {
             try
@@ -104,6 +188,14 @@ namespace AslWebApi.Services
             }
         }
 
+        /// <summary>
+        /// Inserts JSON serialized data of the given ID into log table
+        /// </summary>
+        /// <typeparam name="T">Table type</typeparam>
+        /// <param name="TableName">Table Name</param>
+        /// <param name="logType">Log Type: Update, Delete, Login, Logout, etc</param>
+        /// <param name="Id">Primary Key (ID) of the record</param>
+        /// <returns></returns>
         public bool InsertLog<T>(string TableName, string logType, string Id) where T : class
         {
             try
@@ -127,6 +219,15 @@ namespace AslWebApi.Services
                 return false;
             }
         }
+
+        /// <summary>
+        /// Inserts JSON serialized data of the given ID into log table
+        /// </summary>
+        /// <typeparam name="T">Table type</typeparam>
+        /// <param name="TableName">Table Name</param>
+        /// <param name="logType">Log Type: Update, Delete, Login, Logout, etc</param>
+        /// <param name="Id">Primary Key (ID) of the record</param>
+        /// <returns></returns>
         public async Task<bool> InsertLogAsync<T>(string TableName, string logType, string Id) where T : class
         {
             try
@@ -152,6 +253,14 @@ namespace AslWebApi.Services
             }
         }
 
+        /// <summary>
+        /// Inserts JSON serialized data of the given query into log table
+        /// </summary>
+        /// <typeparam name="T">Table type</typeparam>
+        /// <param name="TableName">Table Name</param>
+        /// <param name="logType">Log Type: Update, Delete, Login, Logout, etc</param>
+        /// <param name="whereClause">Where clause to find the record from sql database.</param>
+        /// <returns></returns>
         public bool InsertLogWithWhereClause<T>(string TableName, string logType, string whereClause) where T : class
         {
             string query = "";
@@ -178,6 +287,14 @@ namespace AslWebApi.Services
             }
         }
 
+        /// <summary>
+        /// Inserts JSON serialized data of the given query into log table
+        /// </summary>
+        /// <typeparam name="T">Table type</typeparam>
+        /// <param name="TableName">Table Name</param>
+        /// <param name="logType">Log Type: Update, Delete, Login, Logout, etc</param>
+        /// <param name="whereClause">Where clause to find the record from sql database.</param>
+        /// <returns></returns>
         public async Task<bool> InsertLogWithWhereClauseAsync<T>(string TableName, string logType, string whereClause) where T : class
         {
             //currentUser = await _gFunc.CurrentUserAsync();

@@ -30,6 +30,11 @@ namespace AslWebApi.Controllers
             _urepo = urepo;
         }
 
+        /// <summary>
+        /// Validate given loginModel with database, Creates a authentication token and return it.
+        /// </summary>
+        /// <param name="loginModel"></param>
+        /// <returns>Authentication Token</returns>
         [AllowAnonymous]
         [HttpPost, Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel loginModel)
@@ -43,7 +48,12 @@ namespace AslWebApi.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Validate the user, insert log, insert or update userState, create a token and return it.
+        /// </summary>
+        /// <param name="loginModel"></param>
+        /// <returns>A token string for authentication / UA for unauthorized / BR for bad request</returns>
+        [NonAction]
         private async Task<string> SignIn(LoginModel loginModel)
         {
             if (loginModel == null)
@@ -52,7 +62,6 @@ namespace AslWebApi.Controllers
                 return "BR";
             }
 
-            //List<UserInfo> AllUsers = _userRepo.GetAll().ToListAs();
             UserInfo? user =
                 await _userRepo.GetOneByRawSqlAsync(
                     $"Select top 1 * From UserInfos where LoginID = '{loginModel.UserName}' and LoginPW = '{loginModel.Password}'");
@@ -71,7 +80,6 @@ namespace AslWebApi.Controllers
                     Ltude = "",
                 };
 
-                //UserInfo userInfo = new UserInfo() {Name = "Rahim", UserType = "Admin"};
                 var claims = new[] {
                     //new Claim(ClaimTypes.Name, user.UserName),
                     //new Claim(ClaimTypes.Role, user.Role),
@@ -79,14 +87,11 @@ namespace AslWebApi.Controllers
                     new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
                 };
 
-                //claims.Append(new Claim(type: "Address", value: "Chittagong"));
-
                 var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"));
                 var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
                 var tokeOptions = new JwtSecurityToken(
                     issuer: "http://localhost:7110",
                     audience: "http://localhost:7110",
-                    //claims: new List<Claim>(),
                     claims: claims,
                     expires: DateTime.Now.AddHours(2),
                     signingCredentials: signinCredentials
@@ -139,6 +144,11 @@ namespace AslWebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Change User State
+        /// </summary>
+        /// <param name="userState"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpPost, Route("changeState")]
         public async Task<IActionResult> ChangeState([FromBody] UserState userState)
@@ -148,6 +158,11 @@ namespace AslWebApi.Controllers
             return BadRequest();
         }
 
+        /// <summary>
+        /// Create User and return token for authentication
+        /// </summary>
+        /// <param name="userInfo"></param>
+        /// <returns>Login token if user is successfully created</returns>
         [AllowAnonymous]
         [HttpPost, Route("signup")]
         public async Task<IActionResult> SignUp([FromBody] UserInfo userInfo)
@@ -163,6 +178,10 @@ namespace AslWebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Identify the user and return the last state of the user.
+        /// </summary>
+        /// <returns>UserState object</returns>
         [Authorize]
         [HttpGet,Route("lastState")]
         public async Task<IActionResult> GetLastState()

@@ -8,6 +8,10 @@ namespace AslWebApi.Controllers
     public class ConnectionController : ControllerBase
     {
 
+        /// <summary>
+        /// return string, this method is used for connection status checking.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public string Get()
         {

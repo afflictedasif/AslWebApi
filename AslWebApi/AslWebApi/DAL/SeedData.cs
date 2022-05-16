@@ -5,6 +5,10 @@ namespace AslWebApi.DAL
 {
     public class SeedData
     {
+        /// <summary>
+        /// Insert some seed data into the database UserInfo table
+        /// </summary>
+        /// <param name="context"></param>
         public static void SeedDatabase(DatabaseContext context)
         {
             context.Database.Migrate();

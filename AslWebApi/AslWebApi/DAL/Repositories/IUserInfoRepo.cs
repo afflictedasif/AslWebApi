@@ -32,6 +32,10 @@ public class UserRepo : IUserRepo
         currentUser = GlobalFunctions.CurrentUserS();
     }
 
+    /// <summary>
+    /// Gets last User Id and create new UserId by incrementing the number.
+    /// </summary>
+    /// <returns>new User ID in int</returns>
     private int GenerateNewUserID()
     {
         int lastId =
@@ -42,6 +46,10 @@ public class UserRepo : IUserRepo
         return lastId + 1;
     }
 
+    /// <summary>
+    /// Gets last User Id and create new UserId by incrementing the number.
+    /// </summary>
+    /// <returns>new User ID in int</returns>
     private async Task<int> GenerateNewUserIDAsync()
     {
         int lastId =

@@ -14,6 +14,9 @@ namespace AslWebApi
         {
             _httpContextAccessor = httpContextAccessor;
         }
+
+        #region Unused Codes
+
         public CurrentUser? CurrentUser()
         {
             UserInfo? user = null;
@@ -51,6 +54,7 @@ namespace AslWebApi
             return currentUser;
         }
 
+        #endregion
 
 
         #region Static objects and functions
@@ -59,6 +63,11 @@ namespace AslWebApi
         public static string ConnectionString = new SqlConnectionStringBuilder { DataSource = "(local)", InitialCatalog = "AslWebApiDB", UserID = "sa", Password = "12233445", MultipleActiveResultSets = true, ConnectTimeout = 0, Pooling = true, MinPoolSize = 0, MaxPoolSize = 4000 }.ToString();
         public static IFormatProvider dateformat = new System.Globalization.CultureInfo("fr-FR", true);
 
+
+        /// <summary>
+        /// Return local Ip Address
+        /// </summary>
+        /// <returns></returns>
         public static string IpAddress()
         {
             //var feature = HttpHelper.HttpContext.Features.Get<IHttpConnectionFeature>();
@@ -73,11 +82,19 @@ namespace AslWebApi
             return ipAddress.ToString();
         }
 
+        /// <summary>
+        /// Return Local Computer Name
+        /// </summary>
+        /// <returns></returns>
         public static string UserPc()
         {
             return Dns.GetHostName();
         }
 
+        /// <summary>
+        /// Gets current user data from the httpContext and return partial data from it.
+        /// </summary>
+        /// <returns>Current User object</returns>
         public static CurrentUser CurrentUserS()
         {
             UserInfo? user = null;
@@ -86,13 +103,14 @@ namespace AslWebApi
 
             if (usr == null)
             {
+                //if user is loggin in or signing up
                 CurrentUser mockUser = new CurrentUser()
                 {
                     LoginID = "",
-                    UserName = "Mock User",
-                    UserID = 10101,
-                    UserInfoID = 100,
-                    UserType = "SUPERADMIN",
+                    UserName = "Anonymous",
+                    UserID = 00000,
+                    UserInfoID = 000,
+                    UserType = "Anonymous",
                     IPAddress = GlobalFunctions.IpAddress(),
                     UserPC = GlobalFunctions.UserPc(),
                     Ltude = "",

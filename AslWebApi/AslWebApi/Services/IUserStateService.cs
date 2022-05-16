@@ -6,10 +6,29 @@ namespace AslWebApi.Services;
 
 public interface IUserStateService
 {
+    /// <summary>
+    /// Get the previous state of the user and update its timeTo field. then Log entry made, then new userState update is applied.
+    /// </summary>
+    /// <param name="userState"></param>
+    /// <returns>boolean</returns>
     public bool ChangeUserState(UserState userState);
+    /// <summary>
+    /// Get the previous state of the user and update its timeTo field. then Log entry made, then new userState update is applied.
+    /// </summary>
+    /// <param name="userState"></param>
+    /// <returns>boolean</returns>
     public Task<bool> ChangeUserStateAsync(UserState userState);
-
+    /// <summary>
+    /// Inserts new UserState
+    /// </summary>
+    /// <param name="userState"></param>
+    /// <returns>Inserted userState object</returns>
     public UserState? CreateUserState(UserState userState);
+    /// <summary>
+    /// Inserts new UserState
+    /// </summary>
+    /// <param name="userState"></param>
+    /// <returns>Inserted userState object</returns>
     public Task<UserState?> CreateUserStateAsync(UserState userState);
 
     public Task<UserState> GetLastStateAsync(int UserID);
@@ -27,6 +46,11 @@ public class UserStateService : IUserStateService
         _logService = logService;
     }
 
+    /// <summary>
+    /// Get the previous state of the user and update its timeTo field. then Log entry made, then new userState update is applied.
+    /// </summary>
+    /// <param name="userState"></param>
+    /// <returns>boolean</returns>
     public bool ChangeUserState(UserState userState)
     {
         try
@@ -55,6 +79,12 @@ public class UserStateService : IUserStateService
 
     }
 
+
+    /// <summary>
+    /// Get the previous state of the user and update its timeTo field. then Log entry made, then new userState update is applied.
+    /// </summary>
+    /// <param name="userState"></param>
+    /// <returns>boolean</returns>
     public async Task<bool> ChangeUserStateAsync(UserState userState)
     {
         UserState? prevState = await _userStateRepo.GetAsync(userState.UserID);
@@ -76,18 +106,32 @@ public class UserStateService : IUserStateService
         return await _userStateRepo.UpdateAsync(userState);
     }
 
+    /// <summary>
+    /// Inserts new UserState
+    /// </summary>
+    /// <param name="userState"></param>
+    /// <returns>Inserted userState object</returns>
     public UserState? CreateUserState(UserState userState)
     {
         if (userState == null) return null;
         return _userStateRepo.Create(userState);
     }
 
+    /// <summary>
+    /// Inserts new UserState
+    /// </summary>
+    /// <param name="userState"></param>
+    /// <returns>Inserted userState object</returns>
     public async Task<UserState?> CreateUserStateAsync(UserState userState)
     {
         if (userState == null) return null;
         return await _userStateRepo.CreateAsync(userState);
     }
-
+    /// <summary>
+    /// Return the UserState of the user
+    /// </summary>
+    /// <param name="userState"></param>
+    /// <returns>userState object</returns>
     public async Task<UserState?> GetLastStateAsync(int UserID)
     {
         return await _userStateRepo.GetAll().FirstOrDefaultAsync(s => s.UserID == UserID);

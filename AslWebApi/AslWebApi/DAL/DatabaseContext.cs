@@ -18,11 +18,12 @@ namespace AslWebApi.DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //Unique key in UserInfos
+            //Unique key in UserInfos, act as primary key
             modelBuilder.Entity<UserInfo>()
                 .HasIndex(u => new { u.UserID })
                 .IsUnique(true);
 
+            //Unique key in UserInfos
             modelBuilder.Entity<UserInfo>()
                 .HasIndex(u => new { u.EmailID })
                 .IsUnique(true);
