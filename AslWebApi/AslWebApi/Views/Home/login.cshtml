@@ -4,9 +4,11 @@
 @{
 }
 
+@using AslWebApi.DTOs;
 
 @model AslWebApi.DTOs.LoginModel;
 
+@addTagHelper*, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
     Layout = null;
@@ -24,34 +26,37 @@
 </head>
 <body>
 
-<style>
-    body {
-        background: hsla(180,100%,50%,0.1);
-    }
-    #circle1 {
-        background: hsla(180,100%,50%,1);
-        width: 1000px;
-        height: 1000px;
-        border-radius: 50%;
-        position: absolute;
-        top: -20%;
-        left: 60%;
-        z-index: -1;
-    }
-    #circle2 {
-        background: hsla(180,50%,50%,1);
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        position: absolute;
-        top: -50px;
-        left: -50px;
-        z-index: -1;
-    }
-    .headings1{
-        font-family: fantasy;
+    <style>
+        body {
+            background: hsla(180,100%,50%,0.1);
         }
-</style>
+
+        #circle1 {
+            background: hsla(180,100%,50%,1);
+            width: 1000px;
+            height: 1000px;
+            border-radius: 50%;
+            position: absolute;
+            top: -20%;
+            left: 60%;
+            z-index: -1;
+        }
+
+        #circle2 {
+            background: hsla(180,50%,50%,1);
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            z-index: -1;
+        }
+
+        .headings1 {
+            font-family: fantasy;
+        }
+    </style>
     <div id="circle1"></div>
     <div id="circle2"></div>
     <div id="circle3"></div>
@@ -62,7 +67,7 @@
 
         <hr />
 
-        <form  asp-controller="home" asp-action="Login">
+        <form method="post" asp-controller="home" asp-action="Login">
             <div class="row m-2">
                 <div class="col-6"></div>
                 <div class="col-3 text-right"></div>
@@ -83,12 +88,12 @@
             <div class="row m-2">
                 <div class="col-6"></div>
                 <div class="col-3 text-right"></div>
-                <div class="col-3 text-center"><input formmethod="post" type="submit" value="Sign In" class="btn btn-outline-primary" /></div>
+                <div class="col-3 text-center"><input type="submit" value="Sign In" class="btn btn-outline-primary" /></div>
             </div>
 
 
+            <h2 style="color:red;">@ViewBag.ErrMsg</h2>
 
-           @* @ViewBag.ErrMsg*@
 
         </form>
 

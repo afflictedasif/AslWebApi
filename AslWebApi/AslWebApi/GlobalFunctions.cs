@@ -136,4 +136,10 @@ namespace AslWebApi
         #endregion
 
     }
+
+    public class TwoValue
+    {
+        public string Label { get; set; }
+        public string Value { get; set; }
+    }
 }

@@ -25,6 +25,9 @@ namespace AslWebApi.DAL.Models
         [MaxLength(100)]
         public string? Remarks { get; set; }
 
+        [NotMapped]
+        public long? ClogID { get; set; }
+
 
         #region Common Properties
         public int? InUserID { get; set; }

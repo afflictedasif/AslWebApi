@@ -36,7 +36,14 @@ builder.Services.AddAuthentication(opt =>
 {
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
+})
+//for admin panel web
+.AddCookie(options =>
+{
+    options.LoginPath = "/home/login";
+    options.AccessDeniedPath = "/home/login";
+})
+.AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -93,13 +100,40 @@ void Seed(IHost app)
 
 app.UseHttpsRedirection();
 
+//for mvc panel
+app.Use(async (context, next) =>
+{
+    var token = context.Request.Cookies["AslWebApiCookie"];
+    //var token = context.Session.GetString("Token");
+    if (!string.IsNullOrEmpty(token))
+    {
+        context.Request.Headers.Add("Authorization", "Bearer " + token);
+
+    }
+    await next();
+});
+
+//for serving static files to mvc panel
+app.UseStaticFiles();
+
 // Authentication & Authorization
 app.UseAuthentication();
 
 app.UseAuthorization();
 
+
 app.MapControllers();
 
+
+
+
+
+//app.UseEndpoints(endpoints =>
+//{
+//    endpoints.MapControllerRoute(
+//        name: "default",
+//        pattern: "{controller=Home}/{action=Index}/{id?}");
+//});
 
 
 app.Run();
