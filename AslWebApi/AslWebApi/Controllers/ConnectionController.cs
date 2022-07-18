@@ -15,6 +15,7 @@ namespace AslWebApi.Controllers
         [HttpGet]
         public string Get()
         {
+            GlobalFunctions.WriteToFile("Get connection hit");
             return "OK";
         }
     }

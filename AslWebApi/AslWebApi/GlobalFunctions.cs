@@ -59,8 +59,16 @@ namespace AslWebApi
 
         #region Static objects and functions
 
-        //Local connection
-        public static string ConnectionString = new SqlConnectionStringBuilder { DataSource = "(local)", InitialCatalog = "AslWebApiDB", UserID = "sa", Password = "12233445", MultipleActiveResultSets = true, ConnectTimeout = 0, Pooling = true, MinPoolSize = 0, MaxPoolSize = 4000 }.ToString();
+
+
+        ////Local connection
+        //public static string ConnectionString = new SqlConnectionStringBuilder { DataSource = "(local)", InitialCatalog = "AslWebApiDB", UserID = "sa", Password = "12233445", MultipleActiveResultSets = true, ConnectTimeout = 0, Pooling = true, MinPoolSize = 0, MaxPoolSize = 4000 }.ToString();
+
+
+
+        //Test Server
+        public static String ConnectionString = new SqlConnectionStringBuilder { DataSource = "WINS2019\\MSSQLSERVER2019", InitialCatalog = "DemoAslWebApiDB", UserID = "sa", Password = "@Sl#()S3r2021%SQL19", MultipleActiveResultSets = true, ConnectTimeout = 0, Pooling = true, MinPoolSize = 0, MaxPoolSize = 4000 }.ToString();
+
         public static IFormatProvider dateformat = new System.Globalization.CultureInfo("fr-FR", true);
 
 
@@ -131,6 +139,40 @@ namespace AslWebApi
                 Ltude = "",
             };
             return currentUser;
+        }
+
+
+        public static void ErrorLog(Exception ex)
+        {
+            WriteToFile(DateTime.Now.ToString() + $" Message: {ex.Message}. StackTrace: {ex.StackTrace}");
+        }
+
+
+        public static void WriteToFile(string Message)
+        {
+            return;
+
+            string path = AppDomain.CurrentDomain.BaseDirectory + "\\Logs";
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            string filepath = AppDomain.CurrentDomain.BaseDirectory + "\\Logs\\ServiceLog_" + DateTime.Now.Date.ToShortDateString().Replace('/', '_') + ".txt";
+            if (!File.Exists(filepath))
+            {
+                // Create a file to write to.   
+                using (StreamWriter sw = File.CreateText(filepath))
+                {
+                    sw.WriteLine(Message);
+                }
+            }
+            else
+            {
+                using (StreamWriter sw = File.AppendText(filepath))
+                {
+                    sw.WriteLine(Message);
+                }
+            }
         }
 
         #endregion

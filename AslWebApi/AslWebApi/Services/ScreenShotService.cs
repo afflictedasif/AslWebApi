@@ -52,30 +52,43 @@ namespace AslWebApi.Services
         /// <returns>boolean indicating success or failure</returns>
         public async Task<bool> UploadSS(IFormFile file)
         {
-            string[]? result = await _uploader.SaveFileAsync(file);
-            if (result == null) return false;
-
-            string dir = result[0]!;
-            string fileName = result[1]!;
-
-            ScreenShot ss = new ScreenShot()
+            try
             {
-                UserID = _currentUser.UserID,
-                DirPath = dir,
-                FileName = fileName,
-                InTime = DateTime.Now,
-                InUserID = _currentUser.UserID,
-                InUserPC = GlobalFunctions.UserPc(),
-                InIPAddress = GlobalFunctions.IpAddress()
-            };
-            ScreenShot? ssCreated = await _ssRepo.CreateAsync(ss);
-            if (ssCreated == null)
+                string[]? result = await _uploader.SaveFileAsync(file);
+                if (result == null) {
+                    GlobalFunctions.WriteToFile("SS Not Saved");
+
+                    return false; }
+
+                string dir = result[0]!;
+                string fileName = result[1]!;
+
+                ScreenShot ss = new ScreenShot()
+                {
+                    UserID = _currentUser.UserID,
+                    DirPath = dir,
+                    FileName = fileName,
+                    InTime = DateTime.Now,
+                    InUserID = _currentUser.UserID,
+                    InUserPC = GlobalFunctions.UserPc(),
+                    InIPAddress = GlobalFunctions.IpAddress()
+                };
+                ScreenShot? ssCreated = await _ssRepo.CreateAsync(ss);
+                if (ssCreated == null)
+                {
+                    string filePath = $"{dir}\\{fileName}";
+                    _uploader.DeleteFile(filePath);
+
+                    GlobalFunctions.WriteToFile("SS Not Created");
+                    return false;
+                }
+                return true;
+            }
+            catch(Exception ex)
             {
-                string filePath = $"{dir}\\{fileName}";
-                _uploader.DeleteFile(filePath);
+                GlobalFunctions.ErrorLog(ex);
                 return false;
             }
-            return true;
         }
     }
 }

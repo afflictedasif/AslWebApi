@@ -169,6 +169,7 @@ namespace AslWebApi.Controllers
             ScreenShotsVM vm = new ScreenShotsVM();
             CLog? log = await _db.CLogs.FindAsync(CLogID);
             UserState? state = JsonConvert.DeserializeObject<UserState>(log.LogData);
+            //if (state.TimeTo == null) state.TimeTo = (await _db.UserStates.Where(u=> u.TimeFrom >).OrderByDescending(u => u.InTime).FirstOrDefaultAsync()).TimeFrom;
             if (state is not null)
             {
                 List<ScreenShot> screenshots = await (from ss in _db.ScreenShots
