@@ -156,10 +156,13 @@ namespace AslWebApi.Controllers
             if (vm.ToDt?.Date == DateTime.Now.Date)
             {
                 UserState? currentState = await _db.UserStates.FirstOrDefaultAsync(us => us.UserID == UserID);
-                currentState.TimeTo = DateTime.Now;
-                currentState.Remarks = "(Auto Generated)";
-                currentState.ClogID = -1;
-                if (currentState is not null) userStates.Add(currentState);
+                if (currentState is not null)
+                {
+                    currentState.TimeTo = DateTime.Now;
+                    currentState.Remarks = "(Auto Generated)";
+                    currentState.ClogID = -1;
+                    userStates.Add(currentState);
+                }
             }
 
             foreach (CLog log in logs)

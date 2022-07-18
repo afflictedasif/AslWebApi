@@ -61,7 +61,9 @@ namespace AslWebApi
 
 
         //Test Server
-        public static String ConnectionString = new SqlConnectionStringBuilder { DataSource = "WINS2019\\MSSQLSERVER2019", InitialCatalog = "DemoAslWebApiDB", UserID = "sa", Password = "@Sl#()S3r2021%SQL19", MultipleActiveResultSets = true, ConnectTimeout = 0, Pooling = true, MinPoolSize = 0, MaxPoolSize = 4000 }.ToString();
+        //public static String ConnectionString = new SqlConnectionStringBuilder { DataSource = "WINS2019\\MSSQLSERVER2019", InitialCatalog = "DemoAslWebApiDB", UserID = "sa", Password = "@Sl#()S3r2021%SQL19", MultipleActiveResultSets = true, ConnectTimeout = 0, Pooling = true, MinPoolSize = 0, MaxPoolSize = 4000 }.ToString();
+
+        public static String ConnectionString = new SqlConnectionStringBuilder { DataSource = "192.168.1.10,14335", InitialCatalog = "DemoAslWebApiDB", UserID = "sa", Password = "@Sl#()S3r2021%SQL19", MultipleActiveResultSets = true, ConnectTimeout = 0, Pooling = true, MinPoolSize = 0, MaxPoolSize = 4000 }.ToString();
 
         ////Local connection
         //public static string ConnectionString = new SqlConnectionStringBuilder { DataSource = "(local)", InitialCatalog = "AslWebApiDB", UserID = "sa", Password = "12233445", MultipleActiveResultSets = true, ConnectTimeout = 0, Pooling = true, MinPoolSize = 0, MaxPoolSize = 4000 }.ToString();

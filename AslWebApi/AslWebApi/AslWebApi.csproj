@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="ScreenShots\" />
+    <Folder Include="wwwroot\ScreenShots\" />
   </ItemGroup>
 
 </Project>

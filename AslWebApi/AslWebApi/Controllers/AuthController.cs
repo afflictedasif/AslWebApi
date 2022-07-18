@@ -158,6 +158,21 @@ namespace AslWebApi.Controllers
             return BadRequest();
         }
 
+
+        /// <summary>
+        /// Change User State
+        /// </summary>
+        /// <param name="userState"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost, Route("changeStateWithoutLog")]
+        public async Task<IActionResult> ChangeStateWithoutLog([FromBody] UserState userState)
+        {
+            bool result = await _userStateService.ChangeUserStateWithoutLogAsync(userState);
+            if (result) return Ok();
+            return BadRequest();
+        }
+
         /// <summary>
         /// Create User and return token for authentication
         /// </summary>
