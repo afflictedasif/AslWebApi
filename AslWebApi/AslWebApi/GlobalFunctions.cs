@@ -17,42 +17,42 @@ namespace AslWebApi
 
         #region Unused Codes
 
-        public CurrentUser? CurrentUser()
-        {
-            UserInfo? user = null;
+        //public CurrentUser? CurrentUser()
+        //{
+        //    UserInfo? user = null;
 
-            var usr = _httpContextAccessor?.HttpContext?.User.Claims.FirstOrDefault(c => c.Type.Contains("userdata"));
+        //    var usr = _httpContextAccessor?.HttpContext?.User.Claims.FirstOrDefault(c => c.Type.Contains("userdata"));
 
-            if (usr == null)
-            {
-                CurrentUser mockUser = new CurrentUser()
-                {
-                    LoginID = "",
-                    UserName = "Mock User",
-                    UserID = 10101,
-                    UserInfoID = 100,
-                    UserType = "SUPERADMIN",
-                    IPAddress = GlobalFunctions.IpAddress(),
-                    UserPC = GlobalFunctions.UserPc(),
-                    Ltude = "",
-                };
-                return mockUser;
-            }
+        //    if (usr == null)
+        //    {
+        //        CurrentUser mockUser = new CurrentUser()
+        //        {
+        //            LoginID = "",
+        //            UserName = "Mock User",
+        //            UserID = 10101,
+        //            UserInfoID = 100,
+        //            UserType = "SUPERADMIN",
+        //            IPAddress = GlobalFunctions.IpAddress(),
+        //            UserPC = GlobalFunctions.UserPc(),
+        //            Ltude = "",
+        //        };
+        //        return mockUser;
+        //    }
 
-            user = JsonConvert.DeserializeObject<UserInfo>(usr.Value);
-            CurrentUser currentUser = new CurrentUser()
-            {
-                LoginID = user!.LoginID,
-                UserName = user!.UserName,
-                UserID = user!.UserID,
-                UserInfoID = user!.UserInfoID,
-                UserType = user!.UserType,
-                IPAddress = GlobalFunctions.IpAddress(),
-                UserPC = GlobalFunctions.UserPc(),
-                Ltude = "",
-            };
-            return currentUser;
-        }
+        //    user = JsonConvert.DeserializeObject<UserInfo>(usr.Value);
+        //    CurrentUser currentUser = new CurrentUser()
+        //    {
+        //        LoginID = user!.LoginID,
+        //        UserName = user!.UserName,
+        //        UserID = user!.UserID,
+        //        UserInfoID = user!.UserInfoID,
+        //        UserType = user!.UserType,
+        //        IPAddress = GlobalFunctions.IpAddress(),
+        //        UserPC = GlobalFunctions.UserPc(),
+        //        Ltude = "",
+        //    };
+        //    return currentUser;
+        //}
 
         #endregion
 
@@ -60,16 +60,17 @@ namespace AslWebApi
         #region Static objects and functions
 
 
-
-        ////Local connection
-        //public static string ConnectionString = new SqlConnectionStringBuilder { DataSource = "(local)", InitialCatalog = "AslWebApiDB", UserID = "sa", Password = "12233445", MultipleActiveResultSets = true, ConnectTimeout = 0, Pooling = true, MinPoolSize = 0, MaxPoolSize = 4000 }.ToString();
-
-
-
         //Test Server
         public static String ConnectionString = new SqlConnectionStringBuilder { DataSource = "WINS2019\\MSSQLSERVER2019", InitialCatalog = "DemoAslWebApiDB", UserID = "sa", Password = "@Sl#()S3r2021%SQL19", MultipleActiveResultSets = true, ConnectTimeout = 0, Pooling = true, MinPoolSize = 0, MaxPoolSize = 4000 }.ToString();
 
+        ////Local connection
+        //public static string ConnectionString = new SqlConnectionStringBuilder { DataSource = "(local)", InitialCatalog = "AslWebApiDB", UserID = "sa", Password = "12233445", MultipleActiveResultSets = true, ConnectTimeout = 0, Pooling = true, MinPoolSize = 0, MaxPoolSize = 4000 }.ToString();
+        //public static IFormatProvider dateformat = new System.Globalization.CultureInfo("fr-FR", true);
+
+        public static string ClientDir = @"D:\ASLSetup\Files\";
+
         public static IFormatProvider dateformat = new System.Globalization.CultureInfo("fr-FR", true);
+
 
 
         /// <summary>
@@ -141,17 +142,8 @@ namespace AslWebApi
             return currentUser;
         }
 
-
-        public static void ErrorLog(Exception ex)
-        {
-            WriteToFile(DateTime.Now.ToString() + $" Message: {ex.Message}. StackTrace: {ex.StackTrace}");
-        }
-
-
         public static void WriteToFile(string Message)
         {
-            return;
-
             string path = AppDomain.CurrentDomain.BaseDirectory + "\\Logs";
             if (!Directory.Exists(path))
             {
@@ -163,14 +155,14 @@ namespace AslWebApi
                 // Create a file to write to.   
                 using (StreamWriter sw = File.CreateText(filepath))
                 {
-                    sw.WriteLine(Message);
+                    sw.WriteLine( $"{DateTime.Now.ToString()} : {Message}");
                 }
             }
             else
             {
                 using (StreamWriter sw = File.AppendText(filepath))
                 {
-                    sw.WriteLine(Message);
+                    sw.WriteLine($"{DateTime.Now.ToString()} : {Message}");
                 }
             }
         }

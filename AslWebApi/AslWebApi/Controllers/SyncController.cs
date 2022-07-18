@@ -1,5 +1,6 @@
 ﻿using AslWebApi.DAL.Models;
 using AslWebApi.DAL.Repositories;
+using AslWebApi.DTOs;
 using AslWebApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -13,6 +14,8 @@ namespace AslWebApi.Controllers
     [ApiController]
     public class SyncController : ControllerBase
     {
+        private CurrentUser? _currentUser;
+
         private readonly IGenericRepo<ScreenShot> _ssRepo;
         private readonly IGenericRepo<UserState> _userStateRepo;
         private readonly IGenericRepo<CLog> _logRepo;
@@ -23,6 +26,7 @@ namespace AslWebApi.Controllers
             _userStateRepo = userStateRepo;
             _logRepo = logRepo;
             _webHostEnvironment = webHostEnvironment;
+            _currentUser = GlobalFunctions.CurrentUserS();
         }
 
         [Authorize]
@@ -72,10 +76,18 @@ namespace AslWebApi.Controllers
         {
             string rootPath = $"{_webHostEnvironment.WebRootPath}\\ScreenShots";
 
-            ss.DirPath = rootPath + "\\" + ss.DirPath.Substring(6, ss.DirPath.Length - 6);
+            GlobalFunctions.WriteToFile($"Client DirPath: {ss.DirPath}");
+
+            // D:\SS\
+            string ClientDir = GlobalFunctions.ClientDir;
+
+            ss.DirPath = rootPath + "\\" + ss.DirPath.Substring(ClientDir.Length, ss.DirPath.Length - ClientDir.Length);
             ss.ScreenShotID = 0;
+
+            GlobalFunctions.WriteToFile($"Server DirPath: {ss.DirPath}");
+
             ScreenShot? ssCreated = await _ssRepo.CreateAsync(ss);
-            if (ssCreated is not null) return Ok();
+            if (ssCreated is not null) return Ok(ssCreated);
             return BadRequest();
         }
 
@@ -102,11 +114,22 @@ namespace AslWebApi.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpPost, Route("Files")]
+        //[HttpPost]
         public async Task<IActionResult> Files(IFormFile file)
         {
-            await SaveFileAsync(file);
+            //await SaveFileAsync(file);
+
+            string[]? result = await SaveFileAsync(file);
+            //if (result == null) return false;
+
+            string dir = result?[0]!;
+            string fileName = result?[1]!;
+
+            GlobalFunctions.WriteToFile($"dir : {dir}. fileName = {fileName} , is file null = ({file== null})");
+
+
             //if (uploaded)
-            return Ok(new { Size = file.Length });
+            return Ok(new FileInformation { dir = dir, fileName = fileName});
             //else return BadRequest();
         }
 
@@ -129,6 +152,8 @@ namespace AslWebApi.Controllers
 
                 if (file.Length > 0)
                 {
+                    GlobalFunctions.WriteToFile($"File Length : {file.Length}.");
+
                     //var filePath = Path.GetTempFileName();
                     //string rootPath = Path.Combine(Directory.GetCurrentDirectory(), "ScreenShots");
                     string rootPath = $"{_webHostEnvironment.WebRootPath}\\ScreenShots";
@@ -136,6 +161,7 @@ namespace AslWebApi.Controllers
                     string fileName = "";
 
                     folderPath = GenerateFolders(rootPath, file.FileName);
+                    //folderPath = GenerateFolders(rootPath);//, file.FileName);
                     fileName = file.FileName;
                     string filePath = $"{folderPath}\\{fileName}";
 
@@ -147,8 +173,9 @@ namespace AslWebApi.Controllers
                 }
                 return null;
             }
-            catch
+            catch (Exception ex)
             {
+                GlobalFunctions.WriteToFile($"Message : {ex.Message}. StackTrace = {ex.StackTrace}.");
                 return null;
             }
         }

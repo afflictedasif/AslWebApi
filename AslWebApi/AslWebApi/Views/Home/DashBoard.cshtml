@@ -29,9 +29,9 @@
 
         <div class="row">
             <div class="col-1">
-            <a asp-area="" asp-controller="Home" asp-action="LogOut" class="btn btn-outline-danger mt-2" style="float:left;">
-                <i class="bi bi-arrow-left-circle-fill"></i>
-            </a>
+                <a asp-area="" asp-controller="Home" asp-action="LogOut" class="btn btn-outline-danger mt-2" style="float:left;">
+                    <i class="bi bi-arrow-left-circle-fill"></i>
+                </a>
             </div>
             <div class="col-10">
                 <h1 class="text-left">DashBoard&nbsp;&nbsp;&nbsp;</h1>
@@ -106,6 +106,9 @@
                                                 //</form>
                                                 <div style="display:none;">
                                                     <input asp-for="@state.ClogID" name="CLogID" class="form-control" />
+                                                </div>
+                                                <div style="display:none;">
+                                                    <input asp-for="@state.UserID" name="UserID" class="form-control" />
                                                 </div>
                                                 <button type="submit" name="Action" value="Delete" class="btn btn-sm btn-warning w-100">
                                                     @state.CurrentState

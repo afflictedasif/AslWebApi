@@ -54,11 +54,10 @@ namespace AslWebApi.Services
         {
             try
             {
-                string[]? result = await _uploader.SaveFileAsync(file);
-                if (result == null) {
-                    GlobalFunctions.WriteToFile("SS Not Saved");
 
-                    return false; }
+
+                string[]? result = await _uploader.SaveFileAsync(file);
+                if (result == null) return false;
 
                 string dir = result[0]!;
                 string fileName = result[1]!;
@@ -78,15 +77,13 @@ namespace AslWebApi.Services
                 {
                     string filePath = $"{dir}\\{fileName}";
                     _uploader.DeleteFile(filePath);
-
-                    GlobalFunctions.WriteToFile("SS Not Created");
                     return false;
                 }
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                GlobalFunctions.ErrorLog(ex);
+                GlobalFunctions.WriteToFile(ex.Message);
                 return false;
             }
         }

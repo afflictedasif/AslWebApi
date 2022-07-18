@@ -25,9 +25,6 @@ namespace AslWebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> OnPostUploadAsync(IFormFile file)
         {
-            GlobalFunctions.WriteToFile("OnPostUploadAsync hit");
-
-
             bool uploaded = await _screenShotService.UploadSS(file);
             if (uploaded)
                 return Ok(new { Size = file.Length });

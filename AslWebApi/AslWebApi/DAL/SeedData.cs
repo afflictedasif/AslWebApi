@@ -39,7 +39,7 @@ namespace AslWebApi.DAL
                 var User2 = new UserInfo()
                 {
                     UserID = 10101,
-                    UserName = "Rahim Test",
+                    UserName = "Rahim Uddin",
                     Address = "Chittagong",
                     UserType = "COMPADMIN",
                     EmailID = "rahim@gmail.com",
@@ -60,7 +60,7 @@ namespace AslWebApi.DAL
                 var User3 = new UserInfo()
                 {
                     UserID = 10102,
-                    UserName = "Karim Test",
+                    UserName = "Karim Uddin",
                     Address = "Chittagong",
                     UserType = "USER",
                     EmailID = "karim@gmail.com",

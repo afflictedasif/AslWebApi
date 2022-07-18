@@ -23,6 +23,7 @@ namespace AslWebApi.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IGenericRepo<CLog> _logRepo;
         private readonly DatabaseContext _db;
+        private readonly CurrentUser _currentUser;
 
         public HomeController(IGenericRepo<UserInfo> userRepo, IHttpContextAccessor httpContextAccessor, IGenericRepo<CLog> logRepo, DatabaseContext db)
         {
@@ -30,6 +31,7 @@ namespace AslWebApi.Controllers
             _httpContextAccessor = httpContextAccessor;
             _logRepo = logRepo;
             _db = db;
+            _currentUser = GlobalFunctions.CurrentUserS();
         }
         public IActionResult Index()
         {
@@ -147,9 +149,19 @@ namespace AslWebApi.Controllers
 
             int UserID = vm.UserID;
             List<CLog> logs = await _logRepo.GetAll().Where(l => l.UserID == UserID
-                                                            && ((DateTime)l.LogTime!).Date >= vm.FromDt && ((DateTime)l.LogTime!).Date <= vm.ToDt
+                                                            && ((DateTime)l.LogTime!).Date >= vm.FromDt //&& ((DateTime)l.LogTime!).Date <= vm.ToDt
                                                             && l.TableName == "UserStates").OrderByDescending(l => l.LogTime).ToListAsync();
             List<UserState> userStates = new List<UserState>();
+
+            if (vm.ToDt?.Date == DateTime.Now.Date)
+            {
+                UserState? currentState = await _db.UserStates.FirstOrDefaultAsync(us => us.UserID == UserID);
+                currentState.TimeTo = DateTime.Now;
+                currentState.Remarks = "(Auto Generated)";
+                currentState.ClogID = -1;
+                if (currentState is not null) userStates.Add(currentState);
+            }
+
             foreach (CLog log in logs)
             {
                 UserState? state = JsonConvert.DeserializeObject<UserState>(log.LogData);
@@ -158,18 +170,31 @@ namespace AslWebApi.Controllers
                     userStates.Add(state);
             }
             vm.UserStates = (from us in userStates
+                             where us.TimeTo <= vm.ToDt?.AddDays(1)
                              orderby us.TimeTo descending
                              select us).ToList();
+
             return View(vm);
         }
 
         [AuthorizeWithRedirect, HttpPost]
-        public async Task<IActionResult> ScreenShots(long CLogID)
+        public async Task<IActionResult> ScreenShots(long CLogID, int? UserID)
         {
             ScreenShotsVM vm = new ScreenShotsVM();
-            CLog? log = await _db.CLogs.FindAsync(CLogID);
-            UserState? state = JsonConvert.DeserializeObject<UserState>(log.LogData);
-            //if (state.TimeTo == null) state.TimeTo = (await _db.UserStates.Where(u=> u.TimeFrom >).OrderByDescending(u => u.InTime).FirstOrDefaultAsync()).TimeFrom;
+
+            UserState? state;
+
+            if (CLogID == -1)
+            {
+               state =  await _db.UserStates.FirstOrDefaultAsync(s => s.UserID == UserID);
+               if (state is not null) state.TimeTo = state.TimeTo ?? DateTime.Now;
+            }
+            else
+            {
+                CLog? log = await _db.CLogs.FindAsync(CLogID);
+                state = JsonConvert.DeserializeObject<UserState>(log.LogData);
+            }
+
             if (state is not null)
             {
                 List<ScreenShot> screenshots = await (from ss in _db.ScreenShots

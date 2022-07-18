@@ -76,14 +76,13 @@ public class FileUploader : IFileUploader
                 //var filePath = Path.GetTempFileName();
                 //string rootPath = Path.Combine(Directory.GetCurrentDirectory(), "ScreenShots");
                 string rootPath = $"{_webHostEnvironment.WebRootPath}\\ScreenShots";
+                string folderPath = "";
+                string fileName = "";
 
                 if (!Directory.Exists(rootPath))
                 {
                     Directory.CreateDirectory(rootPath);
                 }
-
-                string folderPath = "";
-                string fileName = "";
 
                 folderPath = GenerateFolders(rootPath);
                 fileName = GenerateFileName();
