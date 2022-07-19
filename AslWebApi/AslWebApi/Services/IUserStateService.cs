@@ -18,6 +18,8 @@ public interface IUserStateService
     /// <param name="userState"></param>
     /// <returns>boolean</returns>
     public Task<bool> ChangeUserStateAsync(UserState userState);
+
+    public Task<bool> ChangeUserStateWithoutLogAsync(UserState userState);
     /// <summary>
     /// Inserts new UserState
     /// </summary>
@@ -102,6 +104,17 @@ public class UserStateService : IUserStateService
 
         bool logGenerated = await _logService.InsertLogAsync<UserState>(TableName: "UserStateS", logType: "UPDATE", userState.UserStateId);
         if (!logGenerated) return false;
+
+        return await _userStateRepo.UpdateAsync(userState);
+    }
+
+
+    public async Task<bool> ChangeUserStateWithoutLogAsync(UserState userState)
+    {
+        UserState? prevState = await _userStateRepo.GetAsync(userState.UserID);
+        if (prevState == null) return false;
+
+        userState.UserStateId = prevState.UserStateId;
 
         return await _userStateRepo.UpdateAsync(userState);
     }
