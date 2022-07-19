@@ -159,7 +159,7 @@ namespace AslWebApi.Controllers
                 if (currentState is not null)
                 {
                     currentState.TimeTo = DateTime.Now;
-                    currentState.Remarks = "(Auto Generated)";
+                    currentState.Remarks = "Current State (Auto Generated)";
                     currentState.ClogID = -1;
                     userStates.Add(currentState);
                 }

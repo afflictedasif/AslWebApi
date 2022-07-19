@@ -1,0 +1,52 @@
+﻿@using AslWebApi.DTOs;
+@using AslWebApi.DAL.Models;
+@model AslWebApi.DTOs.ScreenShotsVM;
+@addTagHelper*, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ScreenShots</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+
+
+    @if (Model.ScreenShots is not null && Model.ScreenShots.Count() > 0)
+    {
+        foreach (ScreenShot ss in Model.ScreenShots)
+        {
+
+            string fullPath = ss.DirPath + "\\" + ss.FileName;
+
+
+            fullPath = "\\screenShots\\" + (fullPath.Split("ScreenShots"))[1];
+
+            @*<div>
+                </div>
+                <text>@ss.InTime.ToString() &nbsp;</text>
+                <br />
+                <img src="@fullPath" />
+                <hr />*@
+
+
+
+            <div class="card" style="width: 33%; float:left">
+                <a href="@fullPath" target="_blank">
+                    <img class="card-img-top" src="@fullPath" alt="Card image cap">
+                </a>
+                <div class="card-body">
+                    <p class="card-text">@ss.InTime.ToString() &nbsp;</p>
+                </div>
+            </div>
+        }
+    }
+</body>
+</html>
