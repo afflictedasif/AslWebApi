@@ -1,9 +1,11 @@
 ﻿using AslWebApi.DAL.Models;
 using AslWebApi.DTOs;
 using AslWebApi.Services;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Data.SqlClient;
 using System.Net;
+using System.Text;
 
 namespace AslWebApi
 {
@@ -157,7 +159,7 @@ namespace AslWebApi
                 // Create a file to write to.   
                 using (StreamWriter sw = File.CreateText(filepath))
                 {
-                    sw.WriteLine( $"{DateTime.Now.ToString()} : {Message}");
+                    sw.WriteLine($"{DateTime.Now.ToString()} : {Message}");
                 }
             }
             else
@@ -168,6 +170,218 @@ namespace AslWebApi
                 }
             }
         }
+
+        #endregion
+
+
+
+        #region Alert and Scripts
+
+        //////put this codes in layout
+        ///*For background blur when sweetalert shown*/
+        //body.swal2-shown > [aria-hidden="true"] {
+        //  transition: 1s filter;
+        //filter: blur(5px);
+        //}
+        //<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        //@Html.Raw(TempData["RunJS"]?.ToString())
+        //@Html.Raw(TempData["RunAlert"]?.ToString())
+
+        private static List<string> alertList = new List<string>();
+        private static List<string> scriptList = new List<string>();
+
+        public static void SweetAlertSuccess(Controller controller, string msg)
+        {
+            string currentAlert = @"Swal.fire({
+                      icon: 'success',
+                      text: '...',
+                      title: '" + msg + @"',
+                      timer: 2000,
+                      showConfirmButton: false,
+                      allowEnterKey : true,
+                      allowEscapeKey : true
+                    });";
+            alertList.Add(currentAlert);
+            StringBuilder AllAlert = new StringBuilder();
+            AllAlert.Append("<script>");
+            alertList.ForEach(a => AllAlert.Append(Environment.NewLine + a));
+            AllAlert.Append(Environment.NewLine + "</script>");
+            controller.TempData["RunAlert"] = AllAlert.ToString();
+            controller.Response.OnCompleted(() =>
+            {
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        alertList.Clear();
+                        controller.TempData["RunAlert"] = $"<script></script>";
+                    }
+                    catch { }
+                });
+                return Task.CompletedTask;
+            });
+        }
+
+        public static void SweetAlertError(Controller controller, string msg)
+        {
+            string currentAlert =
+                @"Swal.fire({
+                      icon: 'error',
+                      text: '...',
+                      //title: '" + msg + @"', 
+                      title: ""<h3 style='color:white'> " + msg + @"</h3>"", 
+                      //footer: '<a href="">Why do I have this issue?</a>',
+                      background: 'rgb(179, 0, 0,0.4)',
+                      timer: 2000,
+                      width: 700,
+                      //confirmButtonText: `OK`,
+                      showConfirmButton: false,
+                      timerProgressBar: true,
+                      customClass: {  popup: 'my-swal', backdrop:'my-swal2' },
+                    }); ";
+            alertList.Add(currentAlert);
+            StringBuilder AllAlert = new StringBuilder();
+            AllAlert.Append("<script>");
+            alertList.ForEach(a => AllAlert.Append(Environment.NewLine + a));
+            AllAlert.Append(Environment.NewLine + "</script>");
+            controller.TempData["RunAlert"] = AllAlert.ToString();
+            controller.Response.OnCompleted(() =>
+            {
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        alertList.Clear();
+                        controller.TempData["RunAlert"] = $"<script></script>";
+                    }
+                    catch { }
+                });
+                return Task.CompletedTask;
+            });
+        }
+
+        public static void SweetAlertErrorWithFocusAfter(Controller controller, string msg, string elementID)
+        {
+            string currentAlert =
+                @"Swal.fire({
+                      toast: true,
+                      icon: 'error',
+                      //text: '...',
+                      title: '<h3 style=""text-align:center; color:WHite;text-shadow: 1px 1px #000000;""><b>ERROR:</b> " + msg + @"</h3>',
+                      //footer: '<a href="">Why do I have this issue?</a>',
+                      background: 'rgb(179, 0, 0,0.4)',
+                      timer: 2000,
+                      width: 700,
+                      //confirmButtonText: `OK`,
+                      showConfirmButton: false,
+                      timerProgressBar: true,
+                      customClass: {  popup: 'my-swal', backdrop:'my-swal2' },
+                      //allowEnterKey : true,
+                      //allowEscapeKey : true
+        }).then((result) => {" +
+                "if (result.isDismissed) {" +
+                $"$(\"#{elementID}\").focus();" +
+                @"} else if (result.isDenied) {
+                        Swal.fire('Changes are not saved', '', 'info')
+                      }
+                    });";
+            alertList.Add(currentAlert);
+            StringBuilder AllAlert = new StringBuilder();
+            AllAlert.Append("<script>");
+            alertList.ForEach(a => AllAlert.Append(Environment.NewLine + a));
+            AllAlert.Append(Environment.NewLine + "</script>");
+            controller.TempData["RunAlert"] = AllAlert.ToString();
+            controller.Response.OnCompleted(() =>
+            {
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        alertList.Clear();
+                        controller.TempData["RunAlert"] = $"<script></script>";
+                    }
+                    catch { }
+                });
+                return Task.CompletedTask;
+            });
+        }
+
+        public static void Focus(Controller controller, string cssSelector)
+        {
+            RunJavaScript(controller, $"{cssSelector}.focus();");
+        }
+
+        public static void RunJavaScript(Controller controller, string script)
+        {
+            //scriptList = new List<string>();
+            scriptList.Add(script);
+
+            StringBuilder AllScript = new StringBuilder();
+            AllScript.Append("<script>");
+            AllScript.Append(@"funcJs = function(){");
+            scriptList.ForEach(a => AllScript.Append(Environment.NewLine + a));
+            AllScript.Append(Environment.NewLine + " }");
+            AllScript.Append(Environment.NewLine + "funcJs();");
+            AllScript.Append(Environment.NewLine + " </script>");
+
+
+            //string AllScript = "<script>";
+            //scriptList.ForEach(s => AllScript += " " + s);
+            //AllScript += "</script>";
+            controller.TempData["RunJS"] = AllScript.ToString();
+            controller.Response.OnCompleted(() =>
+            {
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        scriptList.Clear();
+                        //controller.HttpContext.Session.SetString("RunJS", $"<script></script>");
+                        controller.TempData["RunJS"] = $"<script></script>";
+                    }
+                    catch { }
+                });
+                return Task.CompletedTask;
+            });
+        }
+
+        public static void RunJavaScript2(Controller controller, string script)
+        {
+            //scriptList = new List<string>();
+            scriptList.Add(script);
+
+            StringBuilder AllScript = new StringBuilder();
+            AllScript.Append("<script>");
+            scriptList.ForEach(a => AllScript.Append(Environment.NewLine + a));
+            AllScript.Append(Environment.NewLine + " </script>");
+
+
+            //string AllScript = "<script>";
+            //scriptList.ForEach(s => AllScript += " " + s);
+            //AllScript += "</script>";
+            controller.TempData["RunJS"] = AllScript.ToString();
+            controller.Response.OnCompleted(() =>
+            {
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        scriptList.Clear();
+                        //controller.HttpContext.Session.SetString("RunJS", $"<script></script>");
+                        controller.TempData["RunJS"] = $"<script></script>";
+                    }
+                    catch { }
+                });
+                return Task.CompletedTask;
+            });
+        }
+
+        public static void OpenInNewWindow(Controller controller, string url)
+        {
+            string script = $"window.open('{url}','_newtab');";
+            RunJavaScript2(controller, script);
+        }
+
 
         #endregion
 

@@ -58,6 +58,8 @@ namespace AslWebApi.Controllers
             if (loginModel is null || loginModel.UserName is null || loginModel.Password is null)
             {
                 //ViewBag.ErrMsg = "Invalid request";
+                GlobalFunctions.SweetAlertError(this, "UserName and Password Required");
+
                 return RedirectToActionPermanent("Login");
             }
 
@@ -67,7 +69,9 @@ namespace AslWebApi.Controllers
 
             if (user is null)
             {
-                ViewBag.ErrMsg = "Incorrect UserID or Password.";
+                //ViewBag.ErrMsg = "Incorrect UserID or Password.";
+                GlobalFunctions.SweetAlertError(this, "Incorrect UserID or Password.");
+
                 return View();
             }
 
@@ -84,10 +88,11 @@ namespace AslWebApi.Controllers
             }
             else
             {
-                ViewBag.ErrMsg = "Acces Denied";
+                //ViewBag.ErrMsg = "Acces Denied";
+                GlobalFunctions.SweetAlertError(this, "Acces Denied");
+
                 return View();
             }
-
         }
 
         /// <summary>
@@ -316,7 +321,6 @@ namespace AslWebApi.Controllers
         [HttpPost]
         public List<TwoValue> GetCompletionListUserName(string prefix)
         {
-            // your code to query the database goes here
             List<TwoValue> result = new List<TwoValue>();
 
             string query = $@"
