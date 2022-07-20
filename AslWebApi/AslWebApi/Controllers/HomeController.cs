@@ -141,9 +141,57 @@ namespace AslWebApi.Controllers
             return View(vm);
         }
 
+        public IActionResult DashBoard1()
+        {
+            DashBoardVM vm = new DashBoardVM();
+            vm.FromDtString = DateTime.Now.ToString("dd/MM/yyyy");
+            vm.ToDtString = DateTime.Now.ToString("dd/MM/yyyy");
+            return View(vm);
+        }
+
         [AuthorizeWithRedirect]
         [HttpPost]
         public async Task<IActionResult> DashBoard(DashBoardVM vm)
+        {
+
+
+            int UserID = vm.UserID;
+            List<CLog> logs = await _logRepo.GetAll().Where(l => l.UserID == UserID
+                                                            && ((DateTime)l.LogTime!).Date >= vm.FromDt //&& ((DateTime)l.LogTime!).Date <= vm.ToDt
+                                                            && l.TableName == "UserStates").OrderByDescending(l => l.LogTime).ToListAsync();
+            List<UserState> userStates = new List<UserState>();
+
+            if (vm.ToDt?.Date == DateTime.Now.Date)
+            {
+                UserState? currentState = await _db.UserStates.FirstOrDefaultAsync(us => us.UserID == UserID);
+                if (currentState is not null)
+                {
+                    currentState.TimeTo = DateTime.Now;
+                    currentState.Remarks = "Current State (Auto Generated)";
+                    currentState.ClogID = -1;
+                    userStates.Add(currentState);
+                }
+            }
+
+            foreach (CLog log in logs)
+            {
+                UserState? state = JsonConvert.DeserializeObject<UserState>(log.LogData);
+                state.ClogID = log.ClogID;
+                if (state is not null)
+                    userStates.Add(state);
+            }
+            vm.UserStates = (from us in userStates
+                             where us.TimeTo <= vm.ToDt?.AddDays(1)
+                             orderby us.TimeTo descending
+                             select us).ToList();
+
+            return View(vm);
+        }
+
+
+        [AuthorizeWithRedirect]
+        [HttpPost]
+        public async Task<IActionResult> DashBoard1(DashBoardVM vm)
         {
 
 
@@ -191,6 +239,41 @@ namespace AslWebApi.Controllers
             {
                state =  await _db.UserStates.FirstOrDefaultAsync(s => s.UserID == UserID);
                if (state is not null) state.TimeTo = state.TimeTo ?? DateTime.Now;
+            }
+            else
+            {
+                CLog? log = await _db.CLogs.FindAsync(CLogID);
+                state = JsonConvert.DeserializeObject<UserState>(log.LogData);
+            }
+
+            if (state is not null)
+            {
+                List<ScreenShot> screenshots = await (from ss in _db.ScreenShots
+                                                      where ss.InTime >= state.TimeFrom && ss.InTime <= state.TimeTo
+                                                      orderby ss.InTime descending
+                                                      select ss).ToListAsync();
+                vm.ScreenShots = screenshots;
+                //    .ForEach(s =>
+                //{
+                //    string fullPath = s.DirPath + "\\" +  ss.FileName;
+                //fullPath = (fullPath.Split("wwwroot"))[1];
+                //});
+            }
+
+            return View(vm);
+        }
+
+        [AuthorizeWithRedirect, HttpPost]
+        public async Task<IActionResult> ScreenShots1(long CLogID, int? UserID)
+        {
+            ScreenShotsVM vm = new ScreenShotsVM();
+
+            UserState? state;
+
+            if (CLogID == -1)
+            {
+                state = await _db.UserStates.FirstOrDefaultAsync(s => s.UserID == UserID);
+                if (state is not null) state.TimeTo = state.TimeTo ?? DateTime.Now;
             }
             else
             {
